@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jeff · I find what's listening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F1F3FB;
+  --surface: #FFFFFF;
+  --ink: #0C1030;
+  --muted: #566089;
+  --line: #D5DAEE;
+  --net: #7686CF;
+  --amber: #D97706;
+  --ok: #0E9F6E;
+  --danger: #D92D3F;
+  --accent: #4B39EF;
+  --flag: linear-gradient(#0c0c0c 0 28%, #fff 28% 34%, #bb1b1b 34% 66%, #fff 66% 72%, #007a3d 72% 100%);
+  --sans: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #050816; --surface: #0D1230; --ink: #E9EDFF; --muted: #97A2D6; --line: #1D2650;
+    --net: #5B74D6; --amber: #FFB020; --ok: #3EE6A8; --danger: #FF6B6B; --accent: #8FA2FF;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #050816; --surface: #0D1230; --ink: #E9EDFF; --muted: #97A2D6; --line: #1D2650;
+  --net: #5B74D6; --amber: #FFB020; --ok: #3EE6A8; --danger: #FF6B6B; --accent: #8FA2FF;
+}
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 12px); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 1.0625rem; line-height: 1.6; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden; display: flex; align-items: center; touch-action: pan-y; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 80%, transparent) 36%, transparent 64%); }
+.nav { position: absolute; z-index: 3; top: 0; left: 0; right: 0; }
+.nav .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 22px; padding-bottom: 12px; flex-wrap: wrap; }
+.nav .who { order: 1; font-weight: 800; font-size: 1.25rem; text-decoration: none; letter-spacing: -0.01em; }
+.nav ul { order: 2; margin-left: auto !important; display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; align-items: center; flex-wrap: wrap; }
+.nav ul a { text-decoration: none; color: var(--muted); font-size: 0.98rem; }
+.nav ul a:hover { color: var(--ink); }
+.themebtn { order: 3; font: inherit; font-size: 0.9rem; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.themebtn:hover { border-color: var(--ink); }
+.hero-copy { position: relative; z-index: 2; pointer-events: none; padding-top: 72px; padding-bottom: 120px; width: 100%; }
+.hero h1 { font-size: clamp(3.4rem, 9.2vw, 8.8rem); line-height: 0.88; font-weight: 800; font-stretch: 75%; letter-spacing: -0.025em; margin: 0 0 28px; }
+.hero .lead { font-size: clamp(1.1rem, 1.6vw, 1.3rem); color: var(--muted); max-width: 30ch; margin: 0; }
+.hud { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; pointer-events: none; }
+.hud .wrap { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; padding-top: 30px; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.hud b { color: var(--amber); font-weight: 500; }
+.hud .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+
+/* ---------- Sections ---------- */
+section.block { padding: 112px 0; }
+section.block + section.block { border-top: 1px solid var(--line); }
+h2 { font-size: clamp(2.6rem, 6.4vw, 5rem); line-height: 0.92; font-weight: 800; font-stretch: 75%; letter-spacing: -0.025em; margin: 0 0 20px; }
+.port { font-family: var(--mono); font-size: 0.85rem; font-weight: 400; letter-spacing: 0; color: var(--muted); margin-left: 12px; vertical-align: middle; }
+.sub { color: var(--muted); font-size: 1.2rem; margin: 0 0 56px; max-width: 46ch; }
+.block#about h2 { margin-bottom: 36px; }
+.statement { font-size: clamp(1.9rem, 4.4vw, 3.6rem); line-height: 1.12; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 64px; max-width: 24ch; }
+.statement span { opacity: 0.16; transition: opacity 0.25s; }
+.statement span.lit { opacity: 1; }
+.about { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 64px; }
+.about p { max-width: 52ch; margin: 0 0 1em; }
+.kv { margin: 0; border-top: 1px solid var(--line); }
+.kv div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; }
+
+.btn { font: inherit; font-weight: 600; padding: 13px 26px; border-radius: 999px; border: 0; background: var(--ink); color: var(--bg); cursor: pointer; transition: background 0.15s, transform 0.1s; }
+.btn.sm { padding: 8px 18px; font-size: 0.9rem; }
+.btn:hover { background: var(--accent); color: #fff; }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn:disabled:hover { background: var(--ink); color: var(--bg); }
+.link { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+/* ---------- Projects: index + detail ---------- */
+.work { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 56px; align-items: start; }
+.index { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); }
+.grp { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); padding: 22px 0 8px; }
+.grp:first-child { padding-top: 0; }
+.idx { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 0 10px; width: 100%; text-align: left; font: inherit; color: var(--muted); background: none; border: 0; border-top: 1px solid var(--line); padding: 16px 8px 16px 0; cursor: pointer; position: relative; transition: color 0.15s, padding 0.2s; }
+.idx .n { font-family: var(--mono); font-size: 0.8rem; padding-top: 4px; }
+.idx b { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+.idx small { grid-column: 2; font-size: 0.85rem; }
+.idx:hover { color: var(--ink); }
+.idx[aria-selected="true"] { color: var(--ink); padding-left: 14px; }
+.idx[aria-selected="true"]::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 4px; border-radius: 2px; background: var(--accent); }
+.idx[aria-selected="true"] .n { color: var(--accent); }
+
+.pane { animation: rise 0.4s ease both; }
+.pane[hidden] { display: none; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.kind { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
+.pane h3 { font-size: clamp(2.4rem, 4.6vw, 3.6rem); line-height: 0.95; font-weight: 800; font-stretch: 75%; letter-spacing: -0.025em; margin: 6px 0 14px; }
+.pane .one { font-size: 1.2rem; max-width: 52ch; margin: 0 0 28px; }
+.demo { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; overflow: hidden; }
+.demo.flagtop { padding-top: 34px; }
+.demo.flagtop::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 9px; background: var(--flag); }
+.demo-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.demo .note { margin: 14px 0 0; color: var(--muted); font-size: 0.86rem; }
+.pbody { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; margin-top: 32px; }
+.pbody h4 { font-family: var(--mono); font-size: 0.78rem; font-weight: 400; color: var(--muted); margin: 0 0 12px; }
+.built { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.built li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.facts { margin: 0; border-top: 1px solid var(--line); }
+.facts div { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.facts dt { color: var(--muted); font-size: 0.92rem; }
+.facts dd { margin: 0; font-size: 0.98rem; }
+code { font-family: var(--mono); font-size: 0.88em; color: var(--accent); }
+
+/* dashboard */
+.dash { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); overflow: hidden; }
+.dash-bar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+.dash-bar .st { color: var(--ink); }
+.progress { height: 3px; background: var(--line); }
+.progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.4s linear; }
+.dash-body { display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+.gauge { padding: 24px 16px; border-right: 1px solid var(--line); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.gauge svg { width: 100%; max-width: 160px; height: auto; display: block; overflow: visible; }
+.gauge .track { fill: none; stroke: var(--line); stroke-width: 12; stroke-linecap: round; }
+.gauge .fill { fill: none; stroke: var(--muted); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 1.3s cubic-bezier(.2,.7,.2,1), stroke 0.4s; }
+.gauge .num { font-size: 3rem; line-height: 1; font-weight: 800; font-stretch: 75%; margin-top: -44px; position: relative; letter-spacing: -0.02em; }
+.gauge .glabel { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+.devs { padding: 4px 0; }
+.drow { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr) 92px; gap: 10px; align-items: center; padding: 9px 16px; border-bottom: 1px solid var(--line); font-size: 0.92rem; }
+.drow:last-child { border-bottom: 0; }
+.drow.h { font-size: 0.75rem; color: var(--muted); }
+.drow .dn i { display: block; font-style: normal; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.drow .p { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); }
+.pill { justify-self: start; font-size: 0.76rem; font-weight: 600; padding: 2px 11px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill.scan { color: var(--accent); border-color: var(--accent); animation: blink 0.7s infinite alternate; }
+.pill.ok { color: var(--ok); border-color: var(--ok); }
+.pill.med { color: var(--amber); border-color: var(--amber); }
+.pill.high { color: var(--bg); background: var(--danger); border-color: var(--danger); }
+@keyframes blink { from { opacity: 1; } to { opacity: 0.45; } }
+.findings { border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; }
+.findings[hidden] { display: none; }
+.finding { padding: 18px 16px; opacity: 0; transform: translateY(8px); transition: opacity 0.5s, transform 0.5s; }
+.finding + .finding { border-left: 1px solid var(--line); }
+.finding.in { opacity: 1; transform: none; }
+.finding .tag { font-family: var(--mono); font-size: 0.74rem; }
+.finding.high .tag { color: var(--danger); }
+.finding.med .tag { color: var(--amber); }
+.finding b { display: block; font-size: 1.02rem; margin: 3px 0 4px; }
+.finding p { margin: 0 0 6px; color: var(--muted); font-size: 0.9rem; line-height: 1.45; }
+.finding .fix { color: var(--ink); }
+
+/* heatmap */
+.cells { display: grid; grid-template-columns: repeat(25, 1fr); gap: 3px; margin-bottom: 14px; }
+.cells i { aspect-ratio: 1; border-radius: 2px; background: var(--line); transition: background 0.2s; }
+.cells i.seen { background: color-mix(in srgb, var(--net) 45%, var(--line)); }
+.cells i.open { background: var(--amber); }
+.scanlist { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); display: flex; gap: 8px 18px; flex-wrap: wrap; min-height: 20px; margin-bottom: 16px; }
+.scanlist b { color: var(--amber); font-weight: 500; }
+.code { font-family: var(--mono); font-size: 0.78rem; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow-x: auto; white-space: pre; color: var(--muted); margin: 0; }
+.code b { color: var(--ok); font-weight: 500; }
+
+/* API playground */
+.api { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.api .box { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+.api .req { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); margin: 0 0 12px; }
+.api .req b { color: var(--accent); font-weight: 500; }
+.api label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+.field { display: flex; gap: 8px; }
+.field input { flex: 1; min-width: 0; font: inherit; font-family: var(--mono); font-size: 0.9rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; }
+.taken { margin: 12px 0 0; font-family: var(--mono); font-size: 0.74rem; color: var(--muted); }
+.resp .status { font-family: var(--mono); font-size: 0.8rem; font-weight: 500; margin-bottom: 8px; color: var(--muted); }
+.resp .status.s2 { color: var(--ok); }
+.resp .status.s4 { color: var(--danger); }
+.resp pre { margin: 0; font-family: var(--mono); font-size: 0.8rem; color: var(--ink); white-space: pre-wrap; word-break: break-word; min-height: 84px; }
+.phases { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 18px 0 6px; }
+.phases i { height: 8px; border-radius: 4px; background: var(--line); }
+.phases i.done { background: var(--ok); }
+.plabels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); gap: 8px; flex-wrap: wrap; }
+
+/* forum mini app */
+.fbar { display: flex; gap: 10px 16px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { font: inherit; font-size: 0.85rem; padding: 5px 14px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.cats { display: flex; gap: 6px; flex-wrap: wrap; }
+.cats button, .tog { font: inherit; font-size: 0.85rem; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+.cats button[aria-pressed="true"], .tog[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.posts { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); overflow: hidden; }
+.post { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.post:last-child { border-bottom: 0; }
+.post .t { font-weight: 600; line-height: 1.3; }
+.post .c { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.votes { display: flex; gap: 6px; flex-shrink: 0; }
+.votes button { font: inherit; font-size: 0.85rem; font-family: var(--mono); min-width: 58px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
+.votes button:hover { border-color: var(--ink); color: var(--ink); }
+.votes button[aria-pressed="true"].up { border-color: var(--ok); color: var(--ok); }
+.votes button[aria-pressed="true"].down { border-color: var(--danger); color: var(--danger); }
+.empty { padding: 22px 16px; color: var(--muted); }
+.reqlog { margin-top: 12px; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); min-height: 1.4em; }
+.reqlog .s2 { color: var(--ok); }
+.reqlog .s4 { color: var(--danger); }
+
+/* tetris */
+.tgame { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; justify-content: center; outline: none; }
+.tgame canvas#tcv { width: 240px; max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); display: block; }
+.tside { min-width: 150px; }
+.tside canvas { display: block; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); margin-bottom: 14px; }
+.tstats { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; }
+.tstats b { color: var(--ink); font-weight: 500; }
+.tkeys { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin: 12px 0 0; line-height: 1.7; }
+.pad { display: grid; grid-template-columns: repeat(4, 44px); gap: 6px; margin-top: 12px; }
+.pad button { font: inherit; height: 40px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.pad button:active { background: var(--accent); color: #fff; }
+
+/* Route */
+.route { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; padding-top: 64px; }
+.route::before, .route::after { content: ""; position: absolute; top: 13px; left: 0; height: 2px; }
+.route::before { right: 0; background: repeating-linear-gradient(90deg, var(--line) 0 10px, transparent 10px 16px); }
+.route::after { width: 69%; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 1.8s cubic-bezier(.3,.7,.2,1); }
+.route.go::after { transform: scaleX(1); }
+.route .pkt { position: absolute; top: 7px; left: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--amber); opacity: 0; }
+.route.go .pkt { opacity: 1; animation: travel 3.2s 1.8s cubic-bezier(.5,0,.5,1) infinite; }
+@keyframes travel { from { left: 0; } to { left: 67%; } }
+.stop { position: relative; }
+.stop::before { content: ""; position: absolute; top: -64px; left: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); border: 5px solid var(--bg); box-shadow: 0 0 0 2px var(--ink); }
+.stop.next::before { background: var(--bg); box-shadow: 0 0 0 2px var(--accent); border-color: var(--bg); }
+.stop h3 { font-size: 1.7rem; line-height: 1.05; margin: 0 0 10px; font-weight: 800; letter-spacing: -0.02em; }
+.stop p { margin: 0; color: var(--muted); max-width: 30ch; }
+.stop .when { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); display: block; margin-bottom: 8px; }
+.stop.next .when { color: var(--accent); }
+
+/* Terminal */
+.contact-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; align-items: start; }
+.contact-big { font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.15; font-weight: 600; letter-spacing: -0.015em; margin: 0 0 16px; max-width: 18ch; }
+.term { background: #070B22; color: #C8D0FF; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; font-family: var(--mono); font-size: 0.85rem; }
+.term-bar { padding: 12px 18px; border-bottom: 1px solid #1D2650; color: #7F8CC8; font-size: 0.78rem; }
+.tout { padding: 16px 18px 4px; height: 290px; overflow-y: auto; }
+.tout div { padding: 1px 0; white-space: pre-wrap; word-break: break-word; }
+.tout .cmd { color: #fff; }
+.tout .ok { color: #3EE6A8; }
+.tout .dim { color: #7F8CC8; }
+.tout a { color: #FFB020; }
+.tline { display: flex; align-items: center; gap: 8px; padding: 6px 18px 14px; }
+.tline label { color: #3EE6A8; white-space: nowrap; }
+.tline input { flex: 1; min-width: 0; background: transparent; border: 0; color: #fff; font: inherit; outline: none; }
+.tline:focus-within { background: rgba(143, 162, 255, 0.07); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 18px 18px; }
+.chips button { font-family: var(--mono); font-size: 0.75rem; color: #C8D0FF; background: transparent; border: 1px solid #2A3570; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.chips button:hover { border-color: #8FA2FF; color: #fff; }
+footer { padding: 28px 0 56px; color: var(--muted); font-size: 0.9rem; }
+footer .wrap { display: flex; align-items: center; gap: 12px; }
+footer i { width: 36px; height: 12px; border-radius: 2px; background: var(--flag); display: block; }
+
+@media (max-width: 900px) {
+  .hero::before { background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 82%, transparent) 40%, transparent 68%); }
+  .hero { align-items: flex-start; }
+  .hero-copy { padding-top: 140px; padding-bottom: 40px; }
+  .hero h1 { font-size: 4.3rem; }
+  .nav .wrap { display: grid; grid-template-columns: 1fr auto; row-gap: 6px; }
+  .nav ul { grid-column: 1 / -1; grid-row: 2; gap: 16px; margin-left: 0 !important; }
+  .nav .who { grid-row: 1; }
+  .themebtn { grid-row: 1; grid-column: 2; }
+  .about, .contact-grid, .pbody, .api { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .api { gap: 16px; }
+  .kv div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  section.block { padding: 72px 0; }
+  .work { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .index { position: static; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
+  .grp { display: none; }
+  .idx { width: auto; flex-shrink: 0; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; display: block; }
+  .idx .n, .idx small { display: none; }
+  .idx b { font-size: 0.95rem; }
+  .idx[aria-selected="true"] { padding-left: 16px; background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .idx[aria-selected="true"]::before { display: none; }
+  .dash-body { grid-template-columns: minmax(0, 1fr); }
+  .gauge { border-right: 0; border-bottom: 1px solid var(--line); }
+  .drow { grid-template-columns: minmax(0, 1fr) 92px; row-gap: 2px; }
+  .drow .p { grid-column: 1; grid-row: 2; }
+  .drow .pill { grid-column: 2; grid-row: 1; justify-self: end; }
+  .drow.h { display: none; }
+  .findings { grid-template-columns: minmax(0, 1fr); }
+  .finding + .finding { border-left: 0; border-top: 1px solid var(--line); }
+  .demo { padding: 16px; }
+  .post { flex-direction: column; align-items: flex-start; }
+  .tgame { flex-wrap: nowrap; gap: 16px; justify-content: flex-start; }
+  .tgame canvas#tcv { width: 176px; }
+  .tside { min-width: 0; flex: 1; }
+  .tside canvas { width: 72px; height: 72px; }
+  .tkeys { display: none; }
+  .pad { grid-template-columns: repeat(2, 1fr); }
+  .route { grid-template-columns: minmax(0, 1fr); padding: 0 0 0 52px; gap: 36px; }
+  .route::before, .route::after { left: 13px; top: 0; bottom: 0; right: auto; width: 2px; height: auto; }
+  .route::before { background: repeating-linear-gradient(180deg, var(--line) 0 10px, transparent 10px 16px); }
+  .route::after { transform: scaleY(0); transform-origin: top; height: 66%; width: 2px; }
+  .route.go::after { transform: scaleY(1); }
+  .route .pkt { display: none; }
+  .stop::before { top: 2px; left: -52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill.scan { animation: none; }
+  .pane { animation: none; }
+  .route::after { transition: none; }
+  .route.go .pkt { animation: none; left: 67%; }
+  .finding, .progress i, .gauge .fill, .statement span, .idx { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<section class="hero" id="hero">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <header class="nav">
+    <div class="wrap">
+      <a class="who" href="#hero">Jeff</a>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#path">Path</a></li>
+        <li><a href="#stack">Stack</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="themebtn" id="themebtn" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="hero-copy">
+    <div class="wrap">
+      <h1>I find<br>what's<br>listening.</h1>
+      <p class="lead">Networks graduate and Go developer, heading toward cloud and DevOps.</p>
+    </div>
+  </div>
+  <div class="hud" aria-hidden="true">
+    <div class="wrap">
+      <span class="dot"></span>
+      <span>hosts scanned <b id="hosts">0</b></span>
+      <span id="hint">· move your cursor</span>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section class="block" id="about">
+    <div class="wrap">
+      <h2>About<span class="port">22/tcp</span></h2>
+      <p class="statement" id="statement">Most people see the app. I look at the network underneath it, and at what it's leaving open.</p>
+      <div class="about">
+        <div>
+          <p>I'm Jeff, from Kenya. I studied Communication and Computer Networks at the Technical University of Kenya, then joined the Zone01 Kisumu bootcamp to learn how to build the software that watches networks, not just understand them.</p>
+          <p>My first two big projects are both scanners. One finds devices and the services they run. The other turns that into advice a small business owner can act on.</p>
+        </div>
+        <dl class="kv">
+          <div><dt>Based in</dt><dd>Kisumu, Kenya</dd></div>
+          <div><dt>Studied</dt><dd>Communication and Computer Networks, Technical University of Kenya</dd></div>
+          <div><dt>Learning at</dt><dd>Zone01 Kisumu, a one-year coding bootcamp</dd></div>
+          <div><dt>Heading to</dt><dd>Cloud and DevOps</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="projects">
+    <div class="wrap">
+      <h2>Projects<span class="port">80/tcp</span></h2>
+      <p class="sub">Five builds, each with something you can try. Pick one on the left.</p>
+
+      <div class="work" id="work">
+        <div class="index" role="tablist" aria-label="Projects" aria-orientation="vertical">
+          <div class="grp">Network tools</div>
+          <button class="idx" role="tab" id="t-shield" data-p="shield" aria-selected="true" aria-controls="p-shield"><span class="n">01</span><b>SME-Shield</b><small>Auditor for Kenyan SMEs</small></button>
+          <button class="idx" role="tab" id="t-scanner" data-p="scanner" aria-selected="false" aria-controls="p-scanner" tabindex="-1"><span class="n">02</span><b>Port scanner</b><small>My first scanner</small></button>
+          <div class="grp">Team and coursework builds</div>
+          <button class="idx" role="tab" id="t-social" data-p="social" aria-selected="false" aria-controls="p-social" tabindex="-1"><span class="n">03</span><b>Social network</b><small>Team of 3 · Go and Next.js</small></button>
+          <button class="idx" role="tab" id="t-forum" data-p="forum" aria-selected="false" aria-controls="p-forum" tabindex="-1"><span class="n">04</span><b>Forum</b><small>Team of 4 · Go and SQLite</small></button>
+          <button class="idx" role="tab" id="t-tetris" data-p="tetris" aria-selected="false" aria-controls="p-tetris" tabindex="-1"><span class="n">05</span><b>Tetris</b><small>Scoped · Go and WebAssembly</small></button>
+        </div>
+
+        <div class="panes">
+          <!-- 01 SME-Shield -->
+          <article class="pane" id="p-shield" role="tabpanel" aria-labelledby="t-shield">
+            <span class="kind">Personal project · In active development</span>
+            <h3>SME-Shield</h3>
+            <p class="one">A network security auditor for the organisations that can't afford a security team: Saccos, hospitals, hotels, schools and government offices. It finds every device, checks what each one exposes, and explains the risks in plain words.</p>
+            <div class="demo flagtop">
+              <div class="demo-head"><span>Live demo · sample shop network</span><button class="btn sm" id="audit-run" type="button">Run the audit</button></div>
+              <div class="dash" aria-live="polite">
+                <div class="dash-bar"><span>192.168.1.0/24</span><span class="st" id="dash-status">Ready</span></div>
+                <div class="progress"><i id="prog"></i></div>
+                <div class="dash-body">
+                  <div class="gauge">
+                    <svg viewBox="0 0 160 90" aria-hidden="true">
+                      <path class="track" d="M 14 80 A 66 66 0 0 1 146 80" pathLength="100"/>
+                      <path class="fill" id="gfill" d="M 14 80 A 66 66 0 0 1 146 80" pathLength="100"/>
+                    </svg>
+                    <div class="num" id="score">--</div>
+                    <div class="glabel" id="glabel">Not scanned yet</div>
+                  </div>
+                  <div class="devs" id="devs"></div>
+                </div>
+                <div class="findings" id="findings" hidden>
+                  <div class="finding high" id="f1"><span class="tag">Fix first</span><b>The camera accepts Telnet logins</b><p>Telnet sends passwords as plain text, and anyone on your Wi-Fi can try to log in.</p><p class="fix">Turn Telnet off in the camera settings and change its default password.</p></div>
+                  <div class="finding med" id="f2"><span class="tag">Check this</span><b>The till PC allows remote desktop</b><p>Remote Desktop lets someone control this computer from another device on the network.</p><p class="fix">If you don't use it, turn it off. If you do, protect it with a long password.</p></div>
+                </div>
+              </div>
+              <p class="note">Simulated demo with made-up devices. The real tool is on GitHub.</p>
+            </div>
+            <div class="pbody">
+              <div>
+                <h4>What I built</h4>
+                <ul class="built">
+                  <li>Concurrent device discovery across the network</li>
+                  <li>Live scan results streamed to the dashboard over WebSockets</li>
+                  <li>Scheduled recurring scans, and PDF reports in East Africa Time</li>
+                  <li>Sign-in with signed session cookies and bcrypt-hashed passwords, plus a first-run setup page</li>
+                  <li>Docker packaging with a multi-stage build</li>
+                </ul>
+              </div>
+              <dl class="facts">
+                <div><dt>Role</dt><dd>Solo. Design, backend and interface.</dd></div>
+                <div><dt>Stack</dt><dd>Go, SQLite, WebSockets, Docker</dd></div>
+                <div><dt>Aim</dt><dd>To pitch it to real Kenyan businesses</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <!-- 02 Port scanner -->
+          <article class="pane" id="p-scanner" role="tabpanel" aria-labelledby="t-scanner" hidden>
+            <span class="kind">Personal project · Go</span>
+            <h3>Port scanner</h3>
+            <p class="one">The first scanner I wrote. It sweeps a network, finds the devices that answer, and reports which ports are open and which service and version is running behind each one.</p>
+            <div class="demo">
+              <div class="demo-head"><span>Sample scan · ports 1 to 200 on a made-up host</span><button class="btn sm" id="ports-run" type="button">Scan again</button></div>
+              <div class="cells" id="cells" role="img" aria-label="Sample scan of ports 1 to 200 with five open ports"></div>
+              <div class="scanlist" id="scanlist"></div>
+              <pre class="code"><b>192.168.1.1</b>     22/tcp   open   OpenSSH
+<b>192.168.1.1</b>     80/tcp   open   nginx
+<b>192.168.1.7</b>    445/tcp   open   SMB</pre>
+              <p class="note">Sample output, not a real scan. Each square is one port.</p>
+            </div>
+            <div class="pbody">
+              <div>
+                <h4>What it does</h4>
+                <ul class="built">
+                  <li>Discovers the active devices on a network</li>
+                  <li>Checks the ports on each device and reports the open ones</li>
+                  <li>Identifies the service and version behind every open port</li>
+                </ul>
+              </div>
+              <dl class="facts">
+                <div><dt>Role</dt><dd>Solo</dd></div>
+                <div><dt>Stack</dt><dd>Go</dd></div>
+                <div><dt>Status</dt><dd>Built. <a class="link" href="https://github.com/rjeff-sudo">Code on GitHub</a></dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <!-- 03 Social network -->
+          <article class="pane" id="p-social" role="tabpanel" aria-labelledby="t-social" hidden>
+            <span class="kind">Zone01 coursework · Team of 3</span>
+            <h3>Social network</h3>
+            <p class="one">A Facebook-style social network built from scratch, with a Go backend, a Next.js frontend, SQLite and real-time features. We split the work by data ownership so we rarely collided. I took the foundation, authentication and shared infrastructure.</p>
+            <div class="demo">
+              <div class="demo-head"><span>Try the nickname check I built</span><span>POST /api/auth/register</span></div>
+              <div class="api">
+                <div class="box">
+                  <p class="req"><b>POST</b> /api/auth/register</p>
+                  <label for="nick">Choose a nickname</label>
+                  <div class="field"><input id="nick" type="text" value="jeff" maxlength="16" autocomplete="off" spellcheck="false"><button class="btn sm" id="nick-send" type="button">Send</button></div>
+                  <p class="taken" id="taken"></p>
+                </div>
+                <div class="box resp" aria-live="polite">
+                  <div class="status" id="rstatus">Waiting for a request</div>
+                  <pre id="rbody">Send a nickname that is already taken, such as jeff.</pre>
+                </div>
+              </div>
+              <div class="phases" aria-hidden="true"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i></i><i></i><i></i></div>
+              <div class="plabels"><span>Backend build: phases 0 to 3 done</span><span>phases 4 to 6 still to come</span></div>
+              <p class="note">Simulated request. It behaves like the endpoint I wrote: a conflict comes back with a suggestion in the same response.</p>
+            </div>
+            <div class="pbody">
+              <div>
+                <h4>What I built</h4>
+                <ul class="built">
+                  <li>The foundation: config, SQLite setup, 15 pairs of migrations, models, router, and a server that shuts down gracefully</li>
+                  <li>The auth module: password hashing, validation, sessions and shared middleware</li>
+                  <li>Shared infrastructure: CORS, logging, file uploads and response helpers</li>
+                  <li>Unique nicknames, with a suggested alternative returned in one response</li>
+                  <li>Frontend integration: agreeing field names, response shapes and date formats with the Next.js side</li>
+                </ul>
+              </div>
+              <dl class="facts">
+                <div><dt>Team</dt><dd>Three of us. Content (posts, comments, groups, events) and real-time (chat, notifications, Docker) belong to my teammates.</dd></div>
+                <div><dt>Stack</dt><dd>Go, Next.js, SQLite, WebSockets, Docker</dd></div>
+                <div><dt>Status</dt><dd>In progress</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <!-- 04 Forum -->
+          <article class="pane" id="p-forum" role="tabpanel" aria-labelledby="t-forum" hidden>
+            <span class="kind">Zone01 coursework · Team of 4</span>
+            <h3>Forum</h3>
+            <p class="one">A web forum in Go and SQLite, built by four people with clear ownership of each module. My part was likes, dislikes and post filtering, from the HTTP handlers down to the SQL.</p>
+            <div class="demo">
+              <div class="demo-head"><span>Play with the handlers I wrote</span><span>POST /like · GET /posts</span></div>
+              <div class="fbar">
+                <div class="seg" role="group" aria-label="Viewing as"><button type="button" id="as-guest" aria-pressed="true">Guest</button><button type="button" id="as-member" aria-pressed="false">Signed in</button></div>
+                <div class="cats" id="cats" role="group" aria-label="Category filter"></div>
+                <button class="tog" id="mine" type="button" aria-pressed="false">Only my likes</button>
+              </div>
+              <div class="posts" id="posts"></div>
+              <div class="reqlog" id="reqlog" aria-live="polite">Try liking a post as a guest, then sign in.</div>
+              <p class="note">Simulated in the browser. The rules match my handlers: sign-in required to vote, voting again removes your vote, counts stay accurate.</p>
+            </div>
+            <div class="pbody">
+              <div>
+                <h4>What I built</h4>
+                <ul class="built">
+                  <li>Like and dislike toggling behind sign-in (<code>POST /like</code>)</li>
+                  <li>Post filtering by category and filter (<code>GET /posts</code>)</li>
+                  <li>The SQL behind both: likes upsert and count, filtered post queries</li>
+                  <li>Unit tests for like, dislike, toggle, guest rejection and count accuracy, on in-memory SQLite</li>
+                </ul>
+              </div>
+              <dl class="facts">
+                <div><dt>Team</dt><dd>Four of us, each owning distinct modules</dd></div>
+                <div><dt>Stack</dt><dd>Go, SQLite, database/sql, Docker</dd></div>
+                <div><dt>Mine</dt><dd>Likes, dislikes and filtering</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <!-- 05 Tetris -->
+          <article class="pane" id="p-tetris" role="tabpanel" aria-labelledby="t-tetris" hidden>
+            <span class="kind">Zone01 coursework · Scoped and documented</span>
+            <h3>Tetris</h3>
+            <p class="one">A Tetris game designed to run in the browser, with the game logic in Go compiled to WebAssembly. It is fully planned and documented. The game below is a quick JavaScript stand-in so you can play it now.</p>
+            <div class="demo">
+              <div class="demo-head"><span>Playable demo · arrow keys, space to drop</span><button class="btn sm" id="tstart" type="button">Start</button></div>
+              <div class="tgame" id="tgame" tabindex="0" aria-label="Tetris game">
+                <canvas id="tcv" width="240" height="480"></canvas>
+                <div class="tside">
+                  <canvas id="tnext" width="96" height="96"></canvas>
+                  <div class="tstats">Score <b id="tscore">0</b><br>Lines <b id="tlines">0</b><br>Level <b id="tlevel">1</b></div>
+                  <div class="tkeys">← → move<br>↑ rotate<br>↓ soft drop<br>space hard drop<br>P pause</div>
+                  <div class="pad"><button type="button" data-a="left" aria-label="Move left">←</button><button type="button" data-a="rot" aria-label="Rotate">↻</button><button type="button" data-a="right" aria-label="Move right">→</button><button type="button" data-a="drop" aria-label="Hard drop">⤓</button></div>
+                </div>
+              </div>
+              <p class="note">A JavaScript stand-in, not the Go and WebAssembly build.</p>
+            </div>
+            <div class="pbody">
+              <div>
+                <h4>What exists</h4>
+                <ul class="built">
+                  <li>A full planning set: product and technical requirements, UI and UX, user flows, database schema and an implementation plan</li>
+                  <li>An architecture that keeps the game logic in Go, compiled to WebAssembly</li>
+                  <li>Accounts with JWT sign-in and PostgreSQL for storage</li>
+                </ul>
+              </div>
+              <dl class="facts">
+                <div><dt>Stack</dt><dd>Go, WebAssembly, PostgreSQL, JWT (planned)</dd></div>
+                <div><dt>Status</dt><dd>Scoped and documented</dd></div>
+              </dl>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="path">
+    <div class="wrap">
+      <h2>Path<span class="port">443/tcp</span></h2>
+      <p class="sub">The route so far, and the next hop.</p>
+      <div class="route" id="route">
+        <span class="pkt" aria-hidden="true"></span>
+        <div class="stop"><span class="when">Hop 1</span><h3>Networking at TUK</h3><p>How packets move, how devices find each other, and where networks break.</p></div>
+        <div class="stop"><span class="when">Hop 2 · now</span><h3>Go at Zone01 Kisumu</h3><p>Scanners, servers and full stack apps, built alone and in teams.</p></div>
+        <div class="stop next"><span class="when">Hop 3 · leaning</span><h3>Cloud and DevOps</h3><p>Running and securing services, with networking as the foundation.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="stack">
+    <div class="wrap">
+      <h2>Stack<span class="port">8080/tcp</span></h2>
+      <p class="sub">What I build with.</p>
+      <dl class="kv" style="max-width:780px">
+        <div><dt>Languages</dt><dd>Go (still learning, used daily), JavaScript</dd></div>
+        <div><dt>Data and live features</dt><dd>SQLite, WebSockets</dd></div>
+        <div><dt>Shipping</dt><dd>Docker, Git and GitHub</dd></div>
+        <div><dt>Networking</dt><dd>TCP/IP, port scanning, service detection</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="wrap contact-grid">
+      <div>
+        <h2>Contact<span class="port">25/tcp</span></h2>
+        <p class="contact-big">Run a command. Say hello.</p>
+        <p class="sub" style="margin-bottom:0">This terminal works. Tap a button, or type <b>help</b>. Tab completes commands.</p>
+      </div>
+      <div class="term" id="term">
+        <div class="term-bar">jeff@dev: ~</div>
+        <div class="tout" id="tout" aria-live="polite"></div>
+        <div class="tline"><label for="tin">jeff@dev:~$</label><input id="tin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command"></div>
+        <div class="chips">
+          <button type="button" data-cmd="neofetch">neofetch</button>
+          <button type="button" data-cmd="scan jeff.dev">scan jeff.dev</button>
+          <button type="button" data-cmd="ls projects">ls projects</button>
+          <button type="button" data-cmd="ping">ping</button>
+          <button type="button" data-cmd="cat contact">cat contact</button>
+          <button type="button" data-cmd="sudo hire jeff">sudo hire jeff</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><i aria-hidden="true"></i>Jeff · Kisumu, Kenya</div></footer>
+
+<script>
+var PF = { C: {}, redraws: [], reduce: window.matchMedia('(prefers-reduced-motion: reduce)').matches };
+PF.$ = function (s) { return document.querySelector(s); };
+PF.readColors = function () {
+  var s = getComputedStyle(document.documentElement);
+  ['bg', 'ink', 'muted', 'line', 'net', 'amber', 'ok', 'danger', 'accent', 'surface'].forEach(function (k) { PF.C[k] = s.getPropertyValue('--' + k).trim(); });
+};
+PF.rgba = function (hex, a) {
+  var h = hex.replace('#', '');
+  return 'rgba(' + parseInt(h.substr(0, 2), 16) + ',' + parseInt(h.substr(2, 2), 16) + ',' + parseInt(h.substr(4, 2), 16) + ',' + a + ')';
+};
+PF.refresh = function () { PF.readColors(); PF.redraws.forEach(function (f) { f(); }); };
+PF.readColors();
+
+/* ---------- Theme ---------- */
+(function () {
+  var root = document.documentElement;
+  PF.toggleTheme = function () {
+    var cur = root.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next); PF.refresh(); return next;
+  };
+  PF.$('#themebtn').addEventListener('click', function () { PF.toggleTheme(); });
+  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', PF.refresh); } catch (e) {}
+})();
+
+/* ---------- Hero: calm, cursor-driven network scanner ---------- */
+(function () {
+  var C = PF.C, reduce = PF.reduce, $ = PF.$, rgba = PF.rgba;
+  var hero = $('#hero'), cvs = $('#net'), ctx = cvs.getContext('2d'), hostsEl = $('#hosts');
+  var W = 0, H = 0, dpr = 1;
+  var nodes = [], specials = [], links = [], packets = [], bursts = [];
+  var mouse = { x: 0, y: 0, on: false, last: -9999 };
+  var probe = { x: 0, y: 0, ok: false };
+  var hover = null, scanned = 0, running = false, raf = 0, tPrev = 0, lensR = 130, LINK = 150;
+  var SAFE = [[22, 'ssh'], [80, 'http'], [443, 'https'], [445, 'smb'], [3306, 'mysql'], [5432, 'postgres'], [8080, 'http-alt'], [53, 'dns']];
+  var RISKY = [[23, 'telnet'], [21, 'ftp'], [3389, 'rdp'], [5900, 'vnc']];
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  function build() {
+    nodes = []; specials = []; packets = []; bursts = [];
+    var wide = W >= 900;
+    var lay = wide
+      ? { about: [0.62, 0.24], projects: [0.86, 0.28], path: [0.72, 0.55], stack: [0.58, 0.8], contact: [0.9, 0.76] }
+      : { about: [0.22, 0.6], projects: [0.76, 0.58], path: [0.48, 0.7], stack: [0.24, 0.81], contact: [0.76, 0.82] };
+    var defs = [['about', '22/tcp', 'Networks graduate, now writing Go'], ['projects', '80/tcp', 'Scanners and full stack apps'], ['path', '443/tcp', 'Heading to cloud and DevOps'], ['stack', '8080/tcp', 'Go, JavaScript, SQLite, Docker'], ['contact', '25/tcp', 'Run a command, say hello']];
+    defs.forEach(function (d, i) {
+      var p = lay[d[0]];
+      nodes.push({ special: true, id: d[0], port: d[1], banner: d[2], ax: p[0] * W, ay: p[1] * H, x: p[0] * W, y: p[1] * H, scan: 1, ph: i * 1.3 });
+      specials.push(nodes[nodes.length - 1]);
+    });
+    var count = Math.max(16, Math.min(46, Math.round(W * H / 26000)));
+    for (var i = 0; i < count; i++) {
+      var risky = Math.random() < 0.14, ports = [], k = Math.random() < 0.35 ? 0 : (Math.random() < 0.7 ? 1 : 2);
+      for (var j = 0; j < k; j++) ports.push(SAFE[Math.floor(Math.random() * SAFE.length)]);
+      if (risky) ports.unshift(RISKY[Math.floor(Math.random() * RISKY.length)]);
+      var bx = 0, by = 0, bestD = -1;
+      for (var tr = 0; tr < 14; tr++) {
+        var cx = rnd(0, W), cy = rnd(0, H), md = 1e9;
+        for (var q = 0; q < nodes.length; q++) { var d0 = Math.hypot(nodes[q].x - cx, nodes[q].y - cy); if (d0 < md) md = d0; }
+        if (md > bestD) { bestD = md; bx = cx; by = cy; }
+      }
+      nodes.push({ x: bx, y: by, vx: rnd(-10, 10), vy: rnd(-10, 10), ip: '10.0.' + Math.floor(rnd(0, 9)) + '.' + Math.floor(rnd(2, 250)), ports: ports, risky: risky, scan: 0, seen: false, flash: 0 });
+    }
+    LINK = Math.max(120, Math.min(190, W * 0.15));
+    lensR = Math.max(90, Math.min(140, W * 0.1));
+    scanned = 0; hostsEl.textContent = '0';
+  }
+
+  var lastW = 0, lastH = 0;
+  function resize() {
+    var nw = hero.clientWidth, nh = hero.clientHeight;
+    if (nw === lastW && Math.abs(nh - lastH) < 90) return;
+    lastW = nw; lastH = nh; W = nw; H = nh;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cvs.width = Math.round(W * dpr); cvs.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    build(); redraw();
+  }
+
+  function update(dt, now) {
+    var i, j, n;
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      if (n.special) { n.x = n.ax + Math.sin(now / 2100 + n.ph) * 2.5; n.y = n.ay + Math.cos(now / 2500 + n.ph) * 2.5; continue; }
+      if (!reduce) {
+        n.x += n.vx * dt; n.y += n.vy * dt;
+        if (n.x < 0 || n.x > W) n.vx *= -1;
+        if (n.y < 0 || n.y > H) n.vy *= -1;
+      }
+    }
+    var useMouse = mouse.on && (now - mouse.last < 3000), tx, ty;
+    if (useMouse) { tx = mouse.x; ty = mouse.y; probe.ok = true; }
+    else if (!reduce) {
+      if (W >= 900) { tx = W * (0.7 + 0.18 * Math.sin(now * 0.00026)); ty = H * (0.5 + 0.28 * Math.sin(now * 0.00037 + 1.2)); }
+      else { tx = W * (0.5 + 0.32 * Math.sin(now * 0.00026)); ty = H * (0.66 + 0.14 * Math.sin(now * 0.00037 + 1.2)); }
+      probe.ok = true;
+    } else probe.ok = false;
+    if (probe.ok) {
+      var f = useMouse ? 1 - Math.pow(0.0004, dt) : 1 - Math.pow(0.08, dt);
+      if (probe.x === 0 && probe.y === 0) { probe.x = tx; probe.y = ty; }
+      probe.x += (tx - probe.x) * f; probe.y += (ty - probe.y) * f;
+    }
+    hover = null; var hd = 34;
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      if (n.special) {
+        if (mouse.on) { var d1 = Math.hypot(n.x - mouse.x, n.y - mouse.y); if (d1 < hd) { hd = d1; hover = n; } }
+        continue;
+      }
+      var d = probe.ok ? Math.hypot(n.x - probe.x, n.y - probe.y) : 9999;
+      if (d < lensR) n.scan = Math.min(1, n.scan + dt * 4); else n.scan = Math.max(0, n.scan - dt * 1.5);
+      if (n.scan > 0.55 && !n.seen) { n.seen = true; scanned++; hostsEl.textContent = scanned; }
+      if (n.flash > 0) n.flash = Math.max(0, n.flash - dt * 1.6);
+    }
+    hero.style.cursor = hover ? 'pointer' : '';
+    links = [];
+    for (i = 0; i < nodes.length; i++) for (j = i + 1; j < nodes.length; j++) {
+      var a = nodes[i], b = nodes[j];
+      var lim = (a.special || b.special) ? LINK * 1.4 : LINK;
+      var dx = a.x - b.x, dy = a.y - b.y;
+      if (dx > lim || dx < -lim || dy > lim || dy < -lim) continue;
+      var dd = Math.hypot(dx, dy);
+      if (dd < lim) links.push([a, b, dd / lim]);
+    }
+    if (!reduce) {
+      if (links.length && packets.length < 7 && Math.random() < dt * 2) {
+        var L = links[Math.floor(Math.random() * links.length)];
+        packets.push({ a: L[0], b: L[1], t: 0, s: rnd(0.35, 0.65), d: Math.random() < 0.5 });
+      }
+      for (i = packets.length - 1; i >= 0; i--) { packets[i].t += packets[i].s * dt; if (packets[i].t >= 1) packets.splice(i, 1); }
+      for (i = bursts.length - 1; i >= 0; i--) if (now - bursts[i].t0 > 1200) bursts.splice(i, 1);
+      bursts.forEach(function (bu) {
+        var r = (now - bu.t0) / 1200 * 320;
+        nodes.forEach(function (nn) { if (!nn.special && Math.abs(Math.hypot(nn.x - bu.x, nn.y - bu.y) - r) < 14) nn.flash = 1; });
+      });
+    }
+  }
+
+  function chip(text, sub, x, y, hot) {
+    ctx.font = '700 12.5px "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif';
+    var w1 = ctx.measureText(text).width, w2 = 0;
+    if (sub) { ctx.font = '400 10.5px "JetBrains Mono", ui-monospace, Menlo, monospace'; w2 = ctx.measureText(sub).width + 6; }
+    var w = w1 + w2 + 22, h = 24, rx = x - w / 2;
+    ctx.fillStyle = hot ? C.accent : rgba(C.bg, 0.9);
+    ctx.strokeStyle = hot ? C.accent : C.line; ctx.lineWidth = 1;
+    ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(rx, y, w, h, 12); else ctx.rect(rx, y, w, h); ctx.fill(); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.font = '700 12.5px "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif';
+    ctx.fillStyle = hot ? '#fff' : C.ink; ctx.fillText(text, rx + 11, y + h / 2 + 0.5);
+    if (sub) { ctx.font = '400 10.5px "JetBrains Mono", ui-monospace, Menlo, monospace'; ctx.fillStyle = '#fff'; ctx.fillText(sub, rx + 17 + w1, y + h / 2 + 0.5); }
+  }
+
+  function render(now) {
+    var i, n;
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1;
+    for (i = 0; i < links.length; i++) {
+      var L = links[i], a = L[0], b = L[1], sc = Math.max(a.scan || 0, b.scan || 0);
+      ctx.strokeStyle = sc > 0.05 ? C.accent : C.net;
+      ctx.globalAlpha = (1 - L[2]) * (0.26 + sc * 0.5);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    if (probe.ok) {
+      var g = ctx.createRadialGradient(probe.x, probe.y, 0, probe.x, probe.y, lensR);
+      g.addColorStop(0, rgba(C.accent, 0.13)); g.addColorStop(1, rgba(C.accent, 0.01));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(probe.x, probe.y, lensR, 0, 6.2832); ctx.fill();
+      ctx.strokeStyle = C.accent; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.6;
+      ctx.setLineDash([6, 10]); ctx.lineDashOffset = -now / 40;
+      ctx.beginPath(); ctx.arc(probe.x, probe.y, lensR, 0, 6.2832); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+    bursts.forEach(function (bu) {
+      var p = (now - bu.t0) / 1200;
+      ctx.strokeStyle = C.amber; ctx.lineWidth = 2; ctx.globalAlpha = 1 - p;
+      ctx.beginPath(); ctx.arc(bu.x, bu.y, p * 320, 0, 6.2832); ctx.stroke(); ctx.globalAlpha = 1;
+    });
+    packets.forEach(function (p) {
+      for (var k = 0; k < 4; k++) {
+        var t = Math.max(0, p.t - k * 0.035), pos = p.d ? t : 1 - t;
+        ctx.globalAlpha = (1 - k * 0.24) * 0.9; ctx.fillStyle = C.amber;
+        ctx.beginPath(); ctx.arc(p.a.x + (p.b.x - p.a.x) * pos, p.a.y + (p.b.y - p.a.y) * pos, 3.2 - k * 0.5, 0, 6.2832); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    });
+    var near = [];
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      if (n.special) continue;
+      ctx.fillStyle = C.net; ctx.globalAlpha = 0.6;
+      ctx.beginPath(); ctx.arc(n.x, n.y, 2.4, 0, 6.2832); ctx.fill(); ctx.globalAlpha = 1;
+      if (n.scan > 0.02) {
+        ctx.fillStyle = n.risky ? C.danger : C.ok; ctx.globalAlpha = Math.min(1, n.scan * 1.2);
+        ctx.beginPath(); ctx.arc(n.x, n.y, 2.4 + n.scan * 2.4, 0, 6.2832); ctx.fill();
+        if (n.risky) { ctx.strokeStyle = C.danger; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(n.x, n.y, 8 + n.scan * 3, 0, 6.2832); ctx.stroke(); }
+        ctx.globalAlpha = 1;
+        if (n.scan > 0.5 && probe.ok && n.ports.length) near.push([Math.hypot(n.x - probe.x, n.y - probe.y), n]);
+      }
+      if (n.flash > 0) { ctx.strokeStyle = C.amber; ctx.globalAlpha = n.flash; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(n.x, n.y, 4 + (1 - n.flash) * 16, 0, 6.2832); ctx.stroke(); ctx.globalAlpha = 1; }
+    }
+    near.sort(function (a, b) { return a[0] - b[0]; });
+    ctx.font = '500 11px "JetBrains Mono", ui-monospace, Menlo, monospace'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    near.slice(0, 3).forEach(function (e) {
+      var n2 = e[1], p0 = n2.ports[0];
+      var txt = n2.ip + '  ' + p0[0] + '/' + p0[1] + (n2.risky ? '  !' : '');
+      var w = ctx.measureText(txt).width + 14, left = n2.x + 14 + w > W - 6, x = left ? n2.x - 14 - w : n2.x + 14;
+      ctx.fillStyle = rgba(C.bg, 0.9); ctx.fillRect(x, n2.y - 10, w, 20);
+      ctx.strokeStyle = n2.risky ? C.danger : C.line; ctx.lineWidth = 1; ctx.strokeRect(x + 0.5, n2.y - 9.5, w - 1, 19);
+      ctx.fillStyle = n2.risky ? C.danger : C.ink; ctx.fillText(txt, x + 7, n2.y + 0.5);
+    });
+    specials.forEach(function (s) {
+      var hot = hover === s;
+      ctx.fillStyle = rgba(C.amber, 0.22); ctx.beginPath(); ctx.arc(s.x, s.y, hot ? 16 : 11, 0, 6.2832); ctx.fill();
+      ctx.fillStyle = C.amber; ctx.beginPath(); ctx.arc(s.x, s.y, hot ? 7 : 5.5, 0, 6.2832); ctx.fill();
+      chip(s.id, hot ? s.port : '', s.x, s.y + 16, hot);
+      if (hot) {
+        ctx.font = '400 12px "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif';
+        var bw = ctx.measureText(s.banner).width + 20, bx = Math.min(Math.max(s.x - bw / 2, 8), W - bw - 8);
+        ctx.fillStyle = C.ink; ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(bx, s.y - 44, bw, 26, 8); else ctx.rect(bx, s.y - 44, bw, 26); ctx.fill();
+        ctx.fillStyle = C.bg; ctx.textAlign = 'left'; ctx.fillText(s.banner, bx + 10, s.y - 31);
+      }
+    });
+  }
+
+  function frame(now) {
+    var dt = Math.min((now - tPrev) / 1000, 0.05) || 0.016; tPrev = now;
+    update(dt, now); render(now);
+    raf = requestAnimationFrame(frame);
+  }
+  function redraw() { if (!W) return; var now = performance.now(); update(0.016, now); render(now); }
+  PF.redraws.push(redraw);
+  function startLoop() { if (running || reduce) return; running = true; tPrev = performance.now(); raf = requestAnimationFrame(frame); }
+  function stopLoop() { running = false; cancelAnimationFrame(raf); }
+  function relPos(ev) { var r = cvs.getBoundingClientRect(); return { x: ev.clientX - r.left, y: ev.clientY - r.top }; }
+  hero.addEventListener('pointermove', function (ev) {
+    var p = relPos(ev); mouse.x = p.x; mouse.y = p.y; mouse.on = true; mouse.last = performance.now();
+    if (reduce) redraw();
+  });
+  hero.addEventListener('pointerleave', function () { mouse.on = false; if (reduce) redraw(); });
+  hero.addEventListener('pointerdown', function (ev) { if (ev.pointerType === 'touch') { var p = relPos(ev); mouse.x = p.x; mouse.y = p.y; mouse.on = true; mouse.last = performance.now(); } });
+  hero.addEventListener('click', function (ev) {
+    if (ev.target.closest('a,button')) return;
+    var p = relPos(ev);
+    if (hover) { var t = document.getElementById(hover.id); if (t) t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); return; }
+    bursts.push({ x: p.x, y: p.y, t0: performance.now() });
+  });
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(hero); else window.addEventListener('resize', resize);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es[0].isIntersecting ? startLoop() : stopLoop(); }).observe(hero); else startLoop();
+  if (window.matchMedia('(pointer: coarse)').matches) $('#hint').textContent = '· touch and drag';
+  resize();
+})();
+
+/* ---------- About: words light up as you scroll ---------- */
+(function () {
+  var st = PF.$('#statement'), words = st.textContent.trim().split(/\s+/);
+  st.textContent = '';
+  words.forEach(function (w, i) { var s = document.createElement('span'); s.textContent = w; st.appendChild(s); if (i < words.length - 1) st.appendChild(document.createTextNode(' ')); });
+  var spans = st.querySelectorAll('span');
+  function light() {
+    var r = st.getBoundingClientRect(), vh = window.innerHeight;
+    var p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (vh * 0.55 + r.height * 0.6)));
+    var lit = Math.round(p * spans.length);
+    for (var i = 0; i < spans.length; i++) spans[i].classList.toggle('lit', PF.reduce || i < lit);
+  }
+  window.addEventListener('scroll', light, { passive: true }); light();
+})();
+
+/* ---------- Projects: tabs + demos ---------- */
+(function () {
+  var $ = PF.$, reduce = PF.reduce;
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.idx'));
+  var panes = Array.prototype.slice.call(document.querySelectorAll('.pane'));
+  var current = 'shield', workVisible = false, ran = {};
+  var hooks = {};
+
+  function show(id, focus) {
+    current = id;
+    tabs.forEach(function (b) { var on = b.getAttribute('data-p') === id; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+    panes.forEach(function (p) { p.hidden = p.id !== 'p-' + id; });
+    if (id !== 'tetris' && hooks.pauseTetris) hooks.pauseTetris();
+    if (workVisible && hooks[id] && !ran[id]) { ran[id] = true; hooks[id](); }
+  }
+  tabs.forEach(function (b, i) {
+    b.addEventListener('click', function () { show(b.getAttribute('data-p')); });
+    b.addEventListener('keydown', function (e) {
+      var k = e.key, ni = -1;
+      if (k === 'ArrowDown' || k === 'ArrowRight') ni = (i + 1) % tabs.length;
+      else if (k === 'ArrowUp' || k === 'ArrowLeft') ni = (i - 1 + tabs.length) % tabs.length;
+      if (ni > -1) { e.preventDefault(); show(tabs[ni].getAttribute('data-p'), true); }
+    });
+  });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      workVisible = es[0].isIntersecting;
+      if (workVisible && hooks[current] && !ran[current]) { ran[current] = true; setTimeout(hooks[current], 350); }
+      if (!workVisible && hooks.pauseTetris) hooks.pauseTetris();
+    }, { threshold: 0.25 }).observe($('#work'));
+  } else { workVisible = true; ran.shield = true; setTimeout(function () { hooks.shield(); }, 400); }
+
+  /* --- SME-Shield audit --- */
+  var DEVS = [
+    { n: 'Router', ip: '192.168.1.1', ports: '443 (admin page)', lvl: 'ok' },
+    { n: 'Office laptop', ip: '192.168.1.12', ports: 'none', lvl: 'ok' },
+    { n: 'Printer', ip: '192.168.1.15', ports: '9100 (printing)', lvl: 'ok' },
+    { n: 'Till PC', ip: '192.168.1.18', ports: '3389 (remote desktop)', lvl: 'med' },
+    { n: 'Phone', ip: '192.168.1.20', ports: 'none', lvl: 'ok' },
+    { n: 'Camera', ip: '192.168.1.24', ports: '23 (telnet)', lvl: 'high' },
+    { n: 'Wi-Fi access point', ip: '192.168.1.30', ports: '80 (setup page)', lvl: 'ok' }
+  ];
+  var devsEl = $('#devs'), LBL = { ok: 'OK', med: 'Check', high: 'Fix first' };
+  function drawRows() {
+    devsEl.innerHTML = '<div class="drow h"><span>Device</span><span>Open ports</span><span>Status</span></div>';
+    DEVS.forEach(function (d, i) {
+      var r = document.createElement('div'); r.className = 'drow'; r.id = 'dr' + i;
+      r.innerHTML = '<span class="dn">' + d.n + '<i>' + d.ip + '</i></span><span class="p">-</span><span class="pill" id="pl' + i + '">Waiting</span>';
+      devsEl.appendChild(r);
+    });
+  }
+  drawRows();
+  var abtn = $('#audit-run'), prog = $('#prog'), dstat = $('#dash-status'), gfill = $('#gfill'), snum = $('#score'), glabel = $('#glabel'), fwrap = $('#findings');
+  var auditRunning = false;
+  function setPill(i, cls, txt) { var p = $('#pl' + i); p.className = 'pill' + (cls ? ' ' + cls : ''); p.textContent = txt; }
+  function countTo(target) {
+    var t0 = performance.now(), dur = reduce ? 1 : 1300;
+    (function step(now) { var k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); snum.textContent = Math.round(target * e); if (k < 1) requestAnimationFrame(step); })(t0);
+  }
+  function runAudit() {
+    if (auditRunning) return;
+    auditRunning = true; abtn.disabled = true; abtn.textContent = 'Scanning...';
+    fwrap.hidden = true; $('#f1').classList.remove('in'); $('#f2').classList.remove('in');
+    gfill.style.strokeDashoffset = 100; gfill.style.stroke = ''; snum.textContent = '--'; glabel.textContent = 'Scanning...';
+    dstat.textContent = 'Scanning 7 devices'; prog.style.width = '0%';
+    drawRows();
+    var wait = reduce ? 0 : 700, i = 0, score = 100;
+    (function next() {
+      if (i >= DEVS.length) return finish(score);
+      var d = DEVS[i], idx = i; i++;
+      setPill(idx, 'scan', 'Scanning');
+      prog.style.width = Math.round((idx / DEVS.length) * 100) + '%';
+      setTimeout(function () {
+        $('#dr' + idx + ' .p').textContent = d.ports;
+        setPill(idx, d.lvl, LBL[d.lvl]);
+        if (d.lvl === 'high') score -= 25;
+        if (d.lvl === 'med') score -= 13;
+        next();
+      }, wait);
+    })();
+  }
+  function finish(score) {
+    prog.style.width = '100%'; dstat.textContent = 'Audit complete · 2 findings';
+    var col = score >= 80 ? PF.C.ok : (score >= 50 ? PF.C.amber : PF.C.danger);
+    gfill.style.stroke = col; gfill.style.strokeDashoffset = 100 - score;
+    countTo(score);
+    glabel.textContent = score >= 80 ? 'Healthy' : (score >= 50 ? 'Needs attention' : 'At risk');
+    fwrap.hidden = false;
+    setTimeout(function () { $('#f1').classList.add('in'); }, reduce ? 0 : 500);
+    setTimeout(function () { $('#f2').classList.add('in'); }, reduce ? 0 : 900);
+    abtn.disabled = false; abtn.textContent = 'Run it again'; auditRunning = false;
+  }
+  abtn.addEventListener('click', runAudit);
+  hooks.shield = function () { setTimeout(runAudit, 300); };
+
+  /* --- Port heatmap --- */
+  var cells = $('#cells'), OPEN = { 22: 'ssh', 53: 'dns', 80: 'http', 110: 'pop3', 143: 'imap' }, scanlist = $('#scanlist'), pbtn = $('#ports-run'), scanning = false;
+  for (var c = 1; c <= 200; c++) cells.appendChild(document.createElement('i'));
+  var cellEls = cells.children;
+  function runPorts() {
+    if (scanning) return; scanning = true; pbtn.disabled = true;
+    for (var z = 0; z < 200; z++) cellEls[z].className = '';
+    scanlist.textContent = '';
+    var i = 0, per = reduce ? 200 : 4;
+    (function step() {
+      for (var k = 0; k < per && i < 200; k++, i++) {
+        var port = i + 1;
+        if (OPEN[port]) { cellEls[i].className = 'open'; var s = document.createElement('span'); s.innerHTML = '<b>' + port + '</b> ' + OPEN[port]; scanlist.appendChild(s); }
+        else cellEls[i].className = 'seen';
+      }
+      if (i < 200) setTimeout(step, 24); else { scanning = false; pbtn.disabled = false; }
+    })();
+  }
+  pbtn.addEventListener('click', runPorts);
+  hooks.scanner = runPorts;
+
+  /* --- Nickname API --- */
+  var taken = ['jeff', 'amina', 'otieno', 'kim'], nick = $('#nick'), rstatus = $('#rstatus'), rbody = $('#rbody'), takenEl = $('#taken');
+  function showTaken() { takenEl.textContent = 'already taken: ' + taken.join(', '); }
+  showTaken();
+  function sendNick() {
+    var v = nick.value.trim().toLowerCase();
+    rstatus.className = 'status';
+    if (!/^[a-z0-9_]{3,16}$/.test(v)) {
+      rstatus.textContent = '400 Bad Request'; rstatus.className = 'status s4';
+      rbody.textContent = '{\n  "error": "invalid_nickname",\n  "hint": "3 to 16 letters, numbers or _"\n}';
+    } else if (taken.indexOf(v) > -1) {
+      var n = 1, sug = v + '_' + n;
+      while (taken.indexOf(sug) > -1) { n++; sug = v + '_' + n; }
+      rstatus.textContent = '409 Conflict'; rstatus.className = 'status s4';
+      rbody.textContent = '{\n  "error": "nickname_taken",\n  "suggestion": "' + sug + '"\n}';
+    } else {
+      taken.push(v); showTaken();
+      rstatus.textContent = '201 Created'; rstatus.className = 'status s2';
+      rbody.textContent = '{\n  "message": "registered",\n  "nickname": "' + v + '"\n}';
+    }
+  }
+  $('#nick-send').addEventListener('click', sendNick);
+  nick.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendNick(); });
+
+  /* --- Forum handlers --- */
+  var posts = [
+    { id: 1, t: 'How do I structure a Go project?', c: 'Go', l: 12, d: 0, m: 0 },
+    { id: 2, t: 'SQLite or Postgres for a small forum?', c: 'Databases', l: 8, d: 1, m: 0 },
+    { id: 3, t: 'Rootless Docker and host networking', c: 'Docker', l: 5, d: 0, m: 0 },
+    { id: 4, t: 'Best way to learn goroutines?', c: 'Go', l: 9, d: 0, m: 0 },
+    { id: 5, t: 'Show your desk setup', c: 'Off-topic', l: 3, d: 2, m: 0 }
+  ];
+  var CATS = ['All', 'Go', 'Databases', 'Docker', 'Off-topic'];
+  var member = false, cat = 'All', mine = false;
+  var listEl = $('#posts'), catsEl = $('#cats'), logEl = $('#reqlog'), gBtn = $('#as-guest'), mBtn = $('#as-member'), mineBtn = $('#mine');
+  function log(method, path, code, extra) {
+    logEl.innerHTML = '';
+    var a = document.createElement('span'); a.textContent = method + ' ' + path + '  ';
+    var b = document.createElement('span'); b.className = code < 300 ? 's2' : 's4'; b.textContent = code + (extra ? ' ' + extra : '');
+    logEl.appendChild(a); logEl.appendChild(b);
+  }
+  function visible() { return posts.filter(function (p) { return (cat === 'All' || p.c === cat) && (!mine || p.m === 1); }); }
+  function renderCats() {
+    catsEl.innerHTML = '';
+    CATS.forEach(function (c) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = c; b.setAttribute('aria-pressed', c === cat ? 'true' : 'false');
+      b.addEventListener('click', function () { cat = c; renderCats(); renderPosts(); log('GET', '/posts?category=' + (c === 'All' ? '' : c.toLowerCase()), 200, '(' + visible().length + ' posts)'); });
+      catsEl.appendChild(b);
+    });
+  }
+  function renderPosts() {
+    listEl.innerHTML = '';
+    var v = visible();
+    if (!v.length) { var e = document.createElement('div'); e.className = 'empty'; e.textContent = 'No posts match this filter.'; listEl.appendChild(e); return; }
+    v.forEach(function (p) {
+      var row = document.createElement('div'); row.className = 'post';
+      var info = document.createElement('div'); info.innerHTML = '<div class="t"></div><div class="c"></div>';
+      info.firstChild.textContent = p.t; info.lastChild.textContent = p.c;
+      var votes = document.createElement('div'); votes.className = 'votes';
+      var up = document.createElement('button'); up.type = 'button'; up.className = 'up'; up.setAttribute('aria-pressed', p.m === 1 ? 'true' : 'false'); up.setAttribute('aria-label', 'Like, ' + p.l); up.textContent = '▲ ' + p.l;
+      var dn = document.createElement('button'); dn.type = 'button'; dn.className = 'down'; dn.setAttribute('aria-pressed', p.m === -1 ? 'true' : 'false'); dn.setAttribute('aria-label', 'Dislike, ' + p.d); dn.textContent = '▼ ' + p.d;
+      up.addEventListener('click', function () { vote(p, 1); }); dn.addEventListener('click', function () { vote(p, -1); });
+      votes.appendChild(up); votes.appendChild(dn); row.appendChild(info); row.appendChild(votes); listEl.appendChild(row);
+    });
+  }
+  function vote(p, val) {
+    if (!member) { log('POST', '/like', 401, 'login required'); return; }
+    if (p.m === val) { if (val === 1) p.l--; else p.d--; p.m = 0; }
+    else { if (p.m === 1) p.l--; if (p.m === -1) p.d--; p.m = val; if (val === 1) p.l++; else p.d++; }
+    renderPosts();
+    log('POST', '/like {post:' + p.id + ', value:' + val + '}', 200, '{likes:' + p.l + ', dislikes:' + p.d + ', mine:' + p.m + '}');
+  }
+  function setMember(on) {
+    member = on; gBtn.setAttribute('aria-pressed', on ? 'false' : 'true'); mBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (!on && mine) { mine = false; mineBtn.setAttribute('aria-pressed', 'false'); renderPosts(); }
+    logEl.textContent = on ? 'Signed in. Votes will now count.' : 'Viewing as a guest. Votes are rejected.';
+  }
+  gBtn.addEventListener('click', function () { setMember(false); });
+  mBtn.addEventListener('click', function () { setMember(true); });
+  mineBtn.addEventListener('click', function () {
+    if (!member) { log('GET', '/posts?filter=liked', 401, 'login required'); return; }
+    mine = !mine; mineBtn.setAttribute('aria-pressed', mine ? 'true' : 'false'); renderPosts();
+    log('GET', '/posts?filter=' + (mine ? 'liked' : 'all'), 200, '(' + visible().length + ' posts)');
+  });
+  renderCats(); renderPosts();
+
+  /* --- Tetris --- */
+  var tc = $('#tcv'), t2 = tc.getContext('2d'), nc = $('#tnext'), n2 = nc.getContext('2d'), tg = $('#tgame'), tbtn = $('#tstart');
+  var COLS = 10, ROWS = 20, SZ = 24;
+  var COLOR = [null, '#8FA2FF', '#FFB020', '#3EE6A8', '#FF6B6B', '#5B74D6', '#C084FC', '#22D3EE'];
+  var SH = [null, [[1, 1, 1, 1]], [[2, 2], [2, 2]], [[0, 3, 0], [3, 3, 3]], [[0, 4, 4], [4, 4, 0]], [[5, 5, 0], [0, 5, 5]], [[6, 0, 0], [6, 6, 6]], [[0, 0, 7], [7, 7, 7]]];
+  var board, cur, nextT, score = 0, lines = 0, level = 1, timer, state = 'ready';
+  function newBoard() { var b = []; for (var r = 0; r < ROWS; r++) b.push(new Array(COLS).fill(0)); return b; }
+  function mk(t) { return { m: SH[t].map(function (r) { return r.slice(); }), x: 0, y: 0, t: t }; }
+  function rt() { return 1 + Math.floor(Math.random() * 7); }
+  function collide(m, x, y) {
+    for (var i = 0; i < m.length; i++) for (var j = 0; j < m[i].length; j++) {
+      if (!m[i][j]) continue;
+      var nx = x + j, ny = y + i;
+      if (nx < 0 || nx >= COLS || ny >= ROWS) return true;
+      if (ny >= 0 && board[ny][nx]) return true;
+    }
+    return false;
+  }
+  function spawn() {
+    cur = mk(nextT); nextT = rt();
+    cur.x = Math.floor((COLS - cur.m[0].length) / 2); cur.y = 0;
+    if (collide(cur.m, cur.x, cur.y)) { state = 'over'; clearInterval(timer); tbtn.textContent = 'Play again'; }
+  }
+  function lock() {
+    cur.m.forEach(function (row, i) { row.forEach(function (v, j) { if (v && cur.y + i >= 0) board[cur.y + i][cur.x + j] = v; }); });
+    var cleared = 0;
+    for (var r = ROWS - 1; r >= 0; r--) if (board[r].every(function (v) { return v; })) { board.splice(r, 1); board.unshift(new Array(COLS).fill(0)); cleared++; r++; }
+    if (cleared) {
+      score += [0, 100, 300, 500, 800][cleared] * level; lines += cleared;
+      var nl = 1 + Math.floor(lines / 10);
+      if (nl !== level) { level = nl; setTimer(); }
+    }
+    spawn(); stats();
+  }
+  function stats() { $('#tscore').textContent = score; $('#tlines').textContent = lines; $('#tlevel').textContent = level; }
+  function tick() { if (!collide(cur.m, cur.x, cur.y + 1)) cur.y++; else lock(); draw(); }
+  function setTimer() { clearInterval(timer); timer = setInterval(tick, Math.max(110, 700 - (level - 1) * 60)); }
+  function rotate(m) { return m[0].map(function (_, i) { return m.map(function (r) { return r[i]; }).reverse(); }); }
+  function act(a) {
+    if (state !== 'run') return;
+    if (a === 'left' && !collide(cur.m, cur.x - 1, cur.y)) cur.x--;
+    else if (a === 'right' && !collide(cur.m, cur.x + 1, cur.y)) cur.x++;
+    else if (a === 'down') { if (!collide(cur.m, cur.x, cur.y + 1)) { cur.y++; score += 1; stats(); } else lock(); }
+    else if (a === 'rot') { var rm = rotate(cur.m), kicks = [0, -1, 1, -2, 2]; for (var k = 0; k < kicks.length; k++) if (!collide(rm, cur.x + kicks[k], cur.y)) { cur.m = rm; cur.x += kicks[k]; break; } }
+    else if (a === 'drop') { var d = 0; while (!collide(cur.m, cur.x, cur.y + 1)) { cur.y++; d++; } score += d * 2; lock(); }
+    draw();
+  }
+  function cell(ctx2, x, y, v, s, alpha) {
+    ctx2.globalAlpha = alpha || 1; ctx2.fillStyle = COLOR[v]; ctx2.fillRect(x * s + 1, y * s + 1, s - 2, s - 2); ctx2.globalAlpha = 1;
+  }
+  function draw() {
+    var C = PF.C, r, c2;
+    t2.clearRect(0, 0, tc.width, tc.height);
+    t2.strokeStyle = C.line; t2.globalAlpha = 0.45; t2.lineWidth = 1;
+    for (r = 1; r < ROWS; r++) { t2.beginPath(); t2.moveTo(0, r * SZ + 0.5); t2.lineTo(tc.width, r * SZ + 0.5); t2.stroke(); }
+    for (c2 = 1; c2 < COLS; c2++) { t2.beginPath(); t2.moveTo(c2 * SZ + 0.5, 0); t2.lineTo(c2 * SZ + 0.5, tc.height); t2.stroke(); }
+    t2.globalAlpha = 1;
+    if (board) for (r = 0; r < ROWS; r++) for (c2 = 0; c2 < COLS; c2++) if (board[r][c2]) cell(t2, c2, r, board[r][c2], SZ);
+    if (cur && board && state !== 'ready') {
+      var gy = cur.y; while (!collide(cur.m, cur.x, gy + 1)) gy++;
+      cur.m.forEach(function (row, i) { row.forEach(function (v, j) { if (v) cell(t2, cur.x + j, gy + i, v, SZ, 0.22); }); });
+      cur.m.forEach(function (row, i) { row.forEach(function (v, j) { if (v && cur.y + i >= 0) cell(t2, cur.x + j, cur.y + i, v, SZ); }); });
+    }
+    if (state !== 'run') {
+      t2.fillStyle = PF.rgba(C.bg, 0.78); t2.fillRect(0, 0, tc.width, tc.height);
+      t2.fillStyle = C.ink; t2.textAlign = 'center'; t2.font = '700 22px "Bricolage Grotesque", system-ui, sans-serif';
+      t2.fillText(state === 'over' ? 'Game over' : (state === 'pause' ? 'Paused' : 'Ready?'), tc.width / 2, tc.height / 2 - 6);
+      t2.font = '400 12px "JetBrains Mono", ui-monospace, monospace'; t2.fillStyle = C.muted;
+      t2.fillText(state === 'over' ? 'Score ' + score : 'Press Start', tc.width / 2, tc.height / 2 + 18);
+    }
+    n2.clearRect(0, 0, nc.width, nc.height);
+    if (nextT) { var m = SH[nextT], s = 20, ox = (nc.width - m[0].length * s) / 2 / s, oy = (nc.height - m.length * s) / 2 / s; m.forEach(function (row, i) { row.forEach(function (v, j) { if (v) cell(n2, ox + j, oy + i, v, s); }); }); }
+  }
+  function startGame() {
+    board = newBoard(); score = 0; lines = 0; level = 1; nextT = rt(); state = 'run'; spawn(); stats(); setTimer(); tbtn.textContent = 'Pause'; draw(); tg.focus({ preventScroll: true });
+  }
+  function pauseGame() { if (state === 'run') { state = 'pause'; clearInterval(timer); tbtn.textContent = 'Resume'; draw(); } }
+  function resumeGame() { if (state === 'pause') { state = 'run'; setTimer(); tbtn.textContent = 'Pause'; draw(); tg.focus({ preventScroll: true }); } }
+  hooks.pauseTetris = pauseGame;
+  PF.redraws.push(draw);
+  tbtn.addEventListener('click', function () { if (state === 'run') pauseGame(); else if (state === 'pause') resumeGame(); else startGame(); });
+  tg.addEventListener('keydown', function (e) {
+    var map = { ArrowLeft: 'left', ArrowRight: 'right', ArrowDown: 'down', ArrowUp: 'rot', ' ': 'drop' };
+    if (e.key === 'p' || e.key === 'P') { e.preventDefault(); if (state === 'run') pauseGame(); else if (state === 'pause') resumeGame(); return; }
+    if (map[e.key]) { e.preventDefault(); act(map[e.key]); }
+  });
+  document.querySelectorAll('.pad button').forEach(function (b) { b.addEventListener('click', function () { act(b.getAttribute('data-a')); tg.focus({ preventScroll: true }); }); });
+  nextT = rt(); draw();
+})();
+
+/* ---------- Route ---------- */
+(function () {
+  var route = PF.$('#route');
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es, ob) { if (es[0].isIntersecting) { route.classList.add('go'); ob.disconnect(); } }, { threshold: 0.3 }).observe(route);
+  else route.classList.add('go');
+})();
+
+/* ---------- Terminal ---------- */
+(function () {
+  var $ = PF.$, reduce = PF.reduce;
+  var tout = $('#tout'), tin = $('#tin'), hist = [], hpos = 0, busy = false, queue = [];
+  var GH = 'https://github.com/rjeff-sudo';
+  var SECTIONS = ['about', 'projects', 'path', 'stack', 'contact'];
+  var LIST = ['help', 'whoami', 'neofetch', 'scan jeff.dev', 'ls', 'ls projects', 'cat about', 'cat contact', 'ping', 'open projects', 'open path', 'open contact', 'sudo hire jeff', 'theme', 'history', 'clear'];
+  function line(t, cls) { var d = document.createElement('div'); if (cls) d.className = cls; d.textContent = t; tout.appendChild(d); tout.scrollTop = tout.scrollHeight; return d; }
+  function linkLine(pre, url, label) {
+    var d = document.createElement('div'); d.appendChild(document.createTextNode(pre));
+    var a = document.createElement('a'); a.href = url; a.textContent = label; a.target = '_blank'; a.rel = 'noopener'; d.appendChild(a);
+    tout.appendChild(d); tout.scrollTop = tout.scrollHeight;
+  }
+  function seq(steps, gap) {
+    var i = 0; busy = true;
+    (function s() {
+      if (i < steps.length) { steps[i](); i++; setTimeout(s, reduce ? 0 : gap); }
+      else { busy = false; if (queue.length) run(queue.shift(), true); }
+    })();
+  }
+  function pad(a, n) { while (a.length < n) a += ' '; return a; }
+  var CMDS = {
+    help: function () { line('help  whoami  neofetch  scan jeff.dev  ls  ls projects'); line('cat about  cat contact  ping  open <section>  sudo hire jeff'); line('theme  history  clear   (Tab completes, arrows browse history)', 'dim'); },
+    whoami: function () { line('Jeff. Networks graduate from TUK, learning Go at Zone01 Kisumu.'); line('Heading toward cloud and DevOps.'); },
+    neofetch: function () {
+      var rows = [['Location', 'Kisumu, Kenya'], ['Studied', 'Communication and Computer Networks, TUK'], ['Now', 'Zone01 Kisumu bootcamp'], ['Writes', 'Go (learning), JavaScript'], ['Building', 'SME-Shield, a security auditor'], ['Next hop', 'Cloud and DevOps']];
+      seq([function () { line('jeff@dev', 'ok'); }, function () { line('--------'); }].concat(rows.map(function (r) { return function () { line(pad(r[0], 10) + r[1]); }; })), 90);
+    },
+    scan: function () {
+      var rows = [['22/tcp', 'about'], ['25/tcp', 'contact'], ['80/tcp', 'projects'], ['443/tcp', 'path'], ['8080/tcp', 'stack']];
+      seq([function () { line('Starting scan of jeff.dev ...'); }, function () { line(pad('PORT', 10) + pad('STATE', 7) + 'SERVICE', 'dim'); }]
+        .concat(rows.map(function (r) { return function () { line(pad(r[0], 10) + pad('open', 7) + r[1], 'ok'); }; }))
+        .concat([function () { line('Scan done: 5 ports open. Try: open projects'); }]), 260);
+    },
+    ls: function () { line('about  projects  path  stack  contact'); },
+    'ls projects': function () { line('sme-shield  port-scanner  social-network  forum  tetris'); },
+    'cat about': function () { line('Studied Communication and Computer Networks at the Technical University of Kenya.'); line('Now learning Go and JavaScript at Zone01 Kisumu. I build tools that show what a network is exposing.'); },
+    'cat contact': function () { linkLine('github: ', GH, 'github.com/rjeff-sudo'); },
+    ping: function () {
+      var l = [function () { line('PING jeff.dev: sending 4 packets'); }];
+      for (var k = 1; k <= 4; k++) (function (n) { l.push(function () { line('reply from jeff.dev: seq=' + n + ' status=listening', 'ok'); }); })(k);
+      l.push(function () { line('4 packets sent, 4 replies, 0% lost'); linkLine('reach me: ', GH, 'github.com/rjeff-sudo'); });
+      seq(l, 420);
+    },
+    'sudo hire jeff': function () { seq([function () { line('[sudo] password for guest: ********'); }, function () { line('Access granted.', 'ok'); }, function () { linkLine('Say hello: ', GH, 'github.com/rjeff-sudo'); }], 520); },
+    theme: function () { line('theme: ' + PF.toggleTheme()); },
+    history: function () { if (!hist.length) line('no history yet'); hist.forEach(function (h, i) { line(' ' + (i + 1) + '  ' + h); }); },
+    clear: function () { tout.textContent = ''; }
+  };
+  function run(cmd, fromQueue) {
+    var c = cmd.trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!c) return;
+    if (busy && !fromQueue) { queue.push(cmd); return; }
+    line('jeff@dev:~$ ' + cmd.trim(), 'cmd');
+    hist.push(c); hpos = hist.length;
+    if (c === 'scan' || c === 'scan jeff.dev') return CMDS.scan();
+    if (c.indexOf('open ') === 0) {
+      var s = c.slice(5);
+      if (SECTIONS.indexOf(s) > -1) { line('opening ' + s + ' ...', 'ok'); var el = document.getElementById(s); if (el) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
+      else line('open: no such section. Try: ' + SECTIONS.join(', '));
+      return;
+    }
+    if (CMDS[c]) CMDS[c](); else line('command not found: ' + c + '. Type help.');
+  }
+  tin.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { run(tin.value); tin.value = ''; }
+    else if (e.key === 'Tab') {
+      e.preventDefault();
+      var v = tin.value.toLowerCase(); if (!v) return;
+      var m = LIST.filter(function (x) { return x.indexOf(v) === 0; });
+      if (m.length === 1) tin.value = m[0]; else if (m.length > 1) line(m.join('   '), 'dim');
+    }
+    else if (e.key === 'ArrowUp') { if (hpos > 0) { hpos--; tin.value = hist[hpos]; } e.preventDefault(); }
+    else if (e.key === 'ArrowDown') { if (hpos < hist.length - 1) { hpos++; tin.value = hist[hpos]; } else { hpos = hist.length; tin.value = ''; } e.preventDefault(); }
+  });
+  document.querySelectorAll('.chips button').forEach(function (b) { b.addEventListener('click', function () { run(b.getAttribute('data-cmd')); }); });
+  line('Welcome. Type help, or tap a command below.');
+  run('whoami');
+})();
+</script>
+</body>
+</html>
